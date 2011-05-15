@@ -1,0 +1,56 @@
+diff --git a/flag_note.module b/flag_note.module
+index 219003f..3b4bd12 100644
+--- a/flag_note.module
++++ b/flag_note.module
+@@ -55,14 +55,14 @@ function flag_note_views_api() {
+ function flag_note_menu() {
+   $items = array();
+   $items['flagnote/action'] = array(
+-    'title' => 'Flag Note',
++    'title' => 'Bookmark',
+     'page callback' => 'flag_note_page',
+     'access callback' => 'user_access',
+     'access arguments' => array('access content'),
+     'type' => MENU_CALLBACK,
+   );
+   $items['flagnote/%/delete'] = array(
+-    'title' => 'Flag Note delete',
++    'title' => 'Confirm bookmark deletion',
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('flag_note_delete_confirm', 1),
+     'access callback' => 'flag_note_has_access',
+@@ -70,7 +70,7 @@ function flag_note_menu() {
+     'type' => MENU_CALLBACK,
+   );
+   $items['flagnote/%/edit'] = array(
+-    'title' => 'Flag Note edit',
++    'title' => 'Edit bookmark',
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('flag_note_edit_form', 1),
+     'access callback' => 'flag_note_has_access',
+@@ -150,6 +150,7 @@ function flag_note_edit_form(&$form_state, $fnid) {
+   $flag = flag_get_flag(NULL, $flag_note['fid']);
+   $form = _flag_note_form($form_state, NULL, $flag->name, NULL, $flag_note);
+   $form['fnid'] = array('#type' => 'value', '#value' => $flag_note['fnid']);
++  $form['submit'] = array('#type' => 'submit', '#value' => t('Submit'));
+   $form['cancel'] = array('#value' => l(t('Cancel'), $_GET['destination']));
+   return $form;
+ }
+@@ -398,7 +399,7 @@ function flag_note_page($action, $flag_name, $content_id) {
+ function _flag_note_form(&$form_state, $action, $flag_name, $content_id, $flag_note = NULL) {
+   $form = array();
+   $flag = flag_get_flag($flag_name);
+-  
++
+   if (arg(2) != 'edit') {
+     drupal_set_title($flag->flag_note_title);
+   }
+@@ -467,7 +468,7 @@ function _flag_note_form(&$form_state, $action, $flag_name, $content_id, $flag_n
+       '#rows' => 5,
+       '#description' => filter_xss($flag->flag_note_help),
+       '#weight' => -1,
+-      '#required' => TRUE,
++      '#required' => FALSE,
+       '#default_value' => $default_value,
+     );
+ 
